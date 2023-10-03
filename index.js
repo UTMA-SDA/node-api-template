@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import mysql from 'mysql';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
 import './env.js';
@@ -9,27 +8,10 @@ const app = express();
 
 // config bcrypt
 const saltRounds = 15;
-const bcryptPassword = process.env.BCRYPT_PASSWORD;
 
-console.log(bcryptPassword);
-// app.use(
-//   cors({
-//     origin: 'https://myproject.com',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-//   })
-// );
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// mysql connection with root user and no password
-// const connection = mysql.createConnection({
-//   host: ,
-//   user: 'root',
-//   password: 'password',
-//   database: 'example_db',
-//   insecureAuth: true,
-// });
-// connection.connect();
 
 // routes
 app.get('/', (req, res) => {
@@ -37,9 +19,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/register', async (req, res) => {
-  let hash;
   const { password } = req.body;
-
   // Using callbak
   // bcrypt.genSalt(saltRounds, function (err, salt) {
   //   bcrypt.hash(password, salt, function (error, hashPassword) {
@@ -51,7 +31,6 @@ app.post('/register', async (req, res) => {
 
   // Using async await (recommended)
   const hashedPassword = await bcrypt.hash(password, saltRounds);
-  console.log(hashedPassword);
   res.send(hashedPassword);
 });
 
