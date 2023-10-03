@@ -27,7 +27,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 // config bcrypt
 const saltRounds = 15;
