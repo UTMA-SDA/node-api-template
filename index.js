@@ -5,7 +5,8 @@ import bcrypt from 'bcrypt';
 import './env.js';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import router from './routes/router.js';
+import verifyApiKey from './middlewares/verifyApiKey.js';
 // TODO: Add SDKs for Firebase products that you want to use
 
 const app = express();
@@ -34,6 +35,10 @@ const saltRounds = 15;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use('/api', router);
+
+app.use(verifyApiKey);
 
 // routes
 app.get('/', (req, res) => {
