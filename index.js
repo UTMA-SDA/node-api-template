@@ -1,13 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import bcrypt from 'bcrypt';
 import './env.js';
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import router from './routes/router.js';
 import verifyApiKey from './middlewares/verifyApiKey.js';
+// import morgan
+import morgan from 'morgan';
 // TODO: Add SDKs for Firebase products that you want to use
 
 const app = express();
@@ -38,6 +39,7 @@ export const db = getFirestore(firebaseApp);
 const saltRounds = 15;
 
 app.use(cors());
+app.use(morgan('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -49,7 +51,6 @@ app.use(verifyApiKey);
 app.get('/', (req, res) => {
   res.send('<h1>Hello world</h1>');
 });
-
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('App listening on port 3000!');

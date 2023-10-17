@@ -11,7 +11,7 @@ async function validateApiKey(req, res, next) {
       });
     }
     // TODO: Get from firestore the api key and validate that it exists
-    console.log(apiKey);
+
     const q = query(collection(db, 'apiKeys'), where('key', '==', apiKey));
     const apiKeyExistis = await getDocs(q);
     if (apiKeyExistis.empty) {
