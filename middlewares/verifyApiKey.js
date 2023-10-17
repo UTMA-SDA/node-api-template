@@ -1,20 +1,32 @@
 import jwt from 'jsonwebtoken';
-
-function validateApiKey(req, res, next) {
+import { db } from '../index.js';
+import { query, where, collection, getDocs } from 'firebase/firestore';
+async function validateApiKey(req, res, next) {
   try {
     const { apikey: apiKey } = req.headers;
+
     if (!apiKey) {
       return res.status(401).json({
         message: 'API key not found',
       });
     }
+    // TODO: Get from firestore the api key and validate that it exists
+    console.log(apiKey);
+    const q = query(collection(db, 'apiKeys'), where('key', '==', apiKey));
+    const apiKeyExistis = await getDocs(q);
+    if (apiKeyExistis.empty) {
+      console.log('No matching documents.');
+      return res.status(401).json({
+        message: 'Invalid API key',
+      });
+    }
+    apiKeyExistis.forEach((doc) => {
+      console.log(doc.id, '=>', doc.data());
+    });
+
     jwt.verify(apiKey, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        return res.status(401).json({
-          message: 'Invalid API key',
-        });
-      }
-      if (decoded.type !== 'apiKey') {
+        console.log(err);
         return res.status(401).json({
           message: 'Invalid API key',
         });
@@ -22,6 +34,7 @@ function validateApiKey(req, res, next) {
       next();
     });
   } catch (error) {
+    console.log('error', error);
     res.status(500).send(error);
   }
 }

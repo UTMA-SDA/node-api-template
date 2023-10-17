@@ -1,5 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { db } from '../index.js';
+import { addDoc, collection } from 'firebase/firestore';
 const router = express.Router();
 
 // GET route that returns "Hello World"
@@ -10,16 +12,21 @@ router.get('/api-key', async (req, res) => {
         type: 'apiKey',
         createdAt: new Date(),
       },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: '1h',
-      }
+      process.env.JWT_SECRET
     );
+    // TODO: Save the key in firestore
+    await addDoc(collection(db, 'apiKeys'), {
+      key,
+      createdAt: new Date(),
+    });
     res.status(200).json({
       key,
     });
   } catch (error) {
-    res.status(500).send(error);
+    console.log(error);
+    res.status(500).json({
+      error,
+    });
   }
 });
 
