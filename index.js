@@ -49,7 +49,7 @@ app.use(verifyApiKey);
 
 // routes
 app.get('/', (req, res) => {
-  res.send('<h1>Hello world</h1>');
+  res.send('Hello world from render! Alejandro Herrera, Juanito perez \n🥸');
 });
 
 app.listen(process.env.PORT || 3000, () => {
